@@ -45,7 +45,7 @@ def job():
 
         csv_files = sorted(csv_files, reverse=True)
         latest_file_path = os.path.join(folder_path, csv_files[0])
-        old_file_path = os.path.join(folder_path, csv_files[1]) if len(csv_files) > 1 else None  # Second latest file, if it exists
+        old_file_path = os.path.join(folder_path, csv_files[2]) if len(csv_files) > 1 else None  # Second latest file, if it exists
 
 
         # Load the latest CSV file
