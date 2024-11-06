@@ -7,7 +7,7 @@ ftp_host = "195.35.14.169"
 ftp_user = "rdpuser"
 ftp_passwd = "Elsaelsa2024#"  # Replace with the correct password
 remote_dir = "/home/rdpuser/snap/"  # Remote directory to copy
-local_dir = "C:/xampp/htdocs/cbi/ftp/"  # Local directory to save the files
+local_dir = "/home/cbi/dbmcz/"  # Local directory to save the files
 
 # Ensure the local directory exists
 if not os.path.exists(local_dir):
