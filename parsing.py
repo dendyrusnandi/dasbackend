@@ -7,6 +7,7 @@ import socket
 from decimal import Decimal, getcontext
 import schedule
 import time
+import math
 
 # Set the precision for Decimal operations
 getcontext().prec = 50 
@@ -38,20 +39,17 @@ def job():
         csv_files = [f for f in os.listdir(folder_path) if f.endswith('.csv')]
         if not csv_files:
             print("No CSV files found.")
-
-
-
             return
 
         csv_files = sorted(csv_files, reverse=True)
         latest_file_path = os.path.join(folder_path, csv_files[0])
-        old_file_path = os.path.join(folder_path, csv_files[2]) if len(csv_files) > 1 else None  # Second latest file, if it exists
+        #old_file_path = os.path.join(folder_path, csv_files[1]) if len(csv_files) > 1 else None  # Second latest file, if it exists
 
 
         # Load the latest CSV file
         df = pd.read_csv(latest_file_path, delimiter=';')
         print(f"Loaded CSV file: {latest_file_path}")
-        print(f"Loaded CSV file: {old_file_path}")
+        #print(f"Loaded CSV file: {old_file_path}")
 
         # Load the CompoID mapping from JSON
         with open('mapping.json', 'r') as json_file:
@@ -74,47 +72,50 @@ def job():
             MeanValue = row['MeanValue']
             CompoID = row['CompoID']
 
-            if key is not None and pd.notna(CompoID):
-                print(f'Key: {key}, CompoID: {CompoID}, Value: {MeanValue}')
-                query = "SELECT id as parameter_id, disabled_threshold, orchestrator_reduction, factor, min_value, max_value, formula FROM datalogger_parameters WHERE `key` = %s"
-                cursor.execute(query, (key,))
-                mysql_data = cursor.fetchone()
+            if not math.isnan(MeanValue):
+                if key is not None and pd.notna(CompoID):
+                    print(f'Key: {key}, CompoID: {CompoID}, Value: {MeanValue}')
+                    query = "SELECT id as parameter_id, disabled_threshold, orchestrator_reduction, factor, min_value, max_value, formula,orchestrator_factor FROM datalogger_parameters WHERE `key` = %s"
+                    cursor.execute(query, (key,))
+                    mysql_data = cursor.fetchone()
 
-                if mysql_data:
-                    parameter_id = mysql_data['parameter_id']
-                    raw_value = float(MeanValue)  # Assuming MeanValue is defined earlier in your code
-                    disabled_threshold = mysql_data['disabled_threshold']
-                    orchestrator_reduction = format(mysql_data['orchestrator_reduction'], '.25f')
-                    factor = format(mysql_data['factor'], '.5f')
-                    min_value = float(format(mysql_data['min_value'], '.5f'))
-                    max_value = float(format(mysql_data['max_value'], '.5f'))
-                    formula = mysql_data['formula']
+                    if mysql_data:
+                        parameter_id = mysql_data['parameter_id']
+                        raw_value = float(MeanValue)  # Assuming MeanValue is defined earlier in your code
+                        disabled_threshold = mysql_data['disabled_threshold']
+                        orchestrator_reduction = format(mysql_data['orchestrator_reduction'], '.25f')
+                        factor = format(mysql_data['factor'], '.5f')
+                        min_value = float(format(mysql_data['min_value'], '.5f'))
+                        max_value = float(format(mysql_data['max_value'], '.5f'))
+                        orchestrator_factor = format(mysql_data['orchestrator_factor'], '.5f')
+                        formula = mysql_data['formula']
 
-                    json_data = {
-                        'parameter_id': str(parameter_id),
-                        'raw_value': float(MeanValue),
-                        'disabled_threshold': disabled_threshold,
-                        'orchestrator_reduction': orchestrator_reduction,
-                        'factor': factor,
-                        'min_value': min_value,
-                        'max_value': max_value,
-                        'formula': formula
-                    }
+                        json_data = {
+                            'parameter_id': str(parameter_id),
+                            'raw_value': float(MeanValue),
+                            'disabled_threshold': disabled_threshold,
+                            'orchestrator_reduction': orchestrator_reduction,
+                            'factor': factor,
+                            'min_value': min_value,
+                            'max_value': max_value,
+                            'formula': formula,
+                            'orchestrator_factor': orchestrator_factor
+                        }
 
-                    # Convert the dictionary to a JSON string
-                    json_string = json.dumps(json_data)
-                    print(json_string)
-                    send_data_via_udp(json_data, udp_ip, udp_port)  # Send via UDP
+                        # Convert the dictionary to a JSON string
+                        json_string = json.dumps(json_data)
+                        print(json_string)
+                        send_data_via_udp(json_data, udp_ip, udp_port)  # Send via UDP
 
-                    #os.remove(old_file_path)
-                    #print(f"Deleted CSV file: {old_file_path}")
+                        #os.remove(old_file_path)
+                        #print(f"Deleted CSV file: {old_file_path}")
 
-                else:
-                    print("No MySQL data found for key:", key)
+                    else:
+                        print("No MySQL data found for key:", key)
 
 
-        os.remove(old_file_path)
-        print(f"Deleted CSV file: {old_file_path}")
+        #os.remove(old_file_path)
+        #print(f"Deleted CSV file: {old_file_path}")
 
         cursor.close()  # Close the cursor after processing
 
@@ -122,7 +123,7 @@ def job():
         print(f"An error occurred: {e}")
 
 # Schedule the job to run every second
-schedule.every(5).seconds.do(job)
+schedule.every(63).seconds.do(job)
 #schedule.every(1).minutes.do(job)
 
 
