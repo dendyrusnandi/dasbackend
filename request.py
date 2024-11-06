@@ -61,7 +61,7 @@ def udp_server(host=host, port=port):
                 query = "SELECT id as parameter_id, disabled_threshold, orchestrator_reduction, factor, min_value, max_value, formula,orchestrator_factor FROM datalogger_parameters WHERE `key` = %s"
                 cursor.execute(query, (message,))
                 mysql_data = cursor.fetchone()
-
+                print(mysql_data)
                 if mysql_data:
                      parameter_id = mysql_data['parameter_id']
                      raw_value = float(file_content)  # Assuming MeanValue is defined earlier in your code
@@ -95,7 +95,7 @@ def udp_server(host=host, port=port):
                 response_message = f"File for {message} not found."
         else:
             print('Invalid message')
-            response_message = 0
+            response_message = 'Invalid Message'
         
         sock.sendto(response_message.encode(), addr)
 
