@@ -36,7 +36,7 @@ def send_data_via_udp(data, udp_ip, udp_port):
 
 def save_mean_value(row):
     # Extract key and MeanValue from the row
-    key = row['key'].replace('.', '')
+    key = row['key'] 
     mean_value = row['MeanValue']
     
     # Define the directory to store files
@@ -160,7 +160,7 @@ def job():
         print(f"An error occurred: {e}")
 
 # Schedule the job to run every second
-schedule.every(10).seconds.do(job)
+schedule.every(65).seconds.do(job)
 #schedule.every(1).minutes.do(job)
 
 
