@@ -1,0 +1,5 @@
+python3 parsing.py  (parsing data dari file csv)
+python3 request.py  (request udp)
+
+config. untuk configurasi ip mysql dan port
+mapping.json ( mapping data key dan id)
