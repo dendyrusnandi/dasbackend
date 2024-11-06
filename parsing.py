@@ -8,6 +8,7 @@ from decimal import Decimal, getcontext
 import schedule
 import time
 import math
+from datetime import datetime
 
 # Set the precision for Decimal operations
 getcontext().prec = 50 
@@ -55,8 +56,6 @@ def save_mean_value(row):
 
 def job():
    
-
-
     try:
         csv_files = [f for f in os.listdir(folder_path) if f.endswith('.csv')]
         if not csv_files:
@@ -69,7 +68,25 @@ def job():
         csv_files = sorted(csv_files, reverse=True)
         latest_file_path = os.path.join(folder_path, csv_files[0])
         #old_file_path = os.path.join(folder_path, csv_files[1]) if len(csv_files) > 1 else None  # Second latest file, if it exists
+        #csv_file_times = csv_files[0].split('-')[1]
+        csv_file_name = csv_files[0].split('-')[1] + "-" + csv_files[0].split('-')[2].split('.')[0]
 
+        csv_file_time = csv_file_name.replace("-", "")
+        print(csv_file_time)
+        
+        datetimes = datetime.now()
+        current_datetime = datetimes.strftime("%Y%m%d%H%M")
+
+        if csv_file_time < current_datetime:
+            print("csv_file_time not update")
+            data = "{\"identifier\" : \"alarm\", \"type\" : \"DAS\", \"message\" : \"DAS File Not Update [" + udp_ip + "]\"}"
+            print(data)
+            send_data_via_udp(data, udp_ip, udp_port_warning)
+
+        else:
+            print("csv_file_time Update")
+
+        #print(current_datetime_str)
         if len(csv_files) > 10:
         # Delete old files
             files_to_delete = csv_files[10:]
@@ -107,7 +124,6 @@ def job():
 
             if math.isnan(MeanValue):
                 MeanValue = 0
-                print(f'kirim alarm notif {key} Nan')
                 data = "{\"identifier\" : \"alarm\", \"type\" : \"DAS\", \"message\" : \"DAS Data "+key+" 0 [" + udp_ip + "]\"}"
                 print(data)
                 send_data_via_udp(data, udp_ip, udp_port_warning)
@@ -167,7 +183,7 @@ def job():
         print(f"An error occurred: {e}")
 
 # Schedule the job to run every second
-schedule.every(65).seconds.do(job)
+schedule.every(5).seconds.do(job)
 #schedule.every(1).minutes.do(job)
 
 
