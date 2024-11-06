@@ -70,6 +70,13 @@ def job():
         latest_file_path = os.path.join(folder_path, csv_files[0])
         #old_file_path = os.path.join(folder_path, csv_files[1]) if len(csv_files) > 1 else None  # Second latest file, if it exists
 
+        if len(csv_files) > 10:
+        # Delete old files
+            files_to_delete = csv_files[10:]
+            for old_file in files_to_delete:
+                old_file_path = os.path.join(folder_path, old_file)
+                os.remove(old_file_path)
+                print(f"Deleted old file: {old_file_path}")
 
         # Load the latest CSV file
         df = pd.read_csv(latest_file_path, delimiter=';')
