@@ -9,7 +9,7 @@ def delete_old_files():
     directory = config.folder_path
     prefix = "002-"
     suffix = ".mv1.csv"
-    one_hour_ago = datetime.now() - timedelta(hours=5)
+    one_hour_ago = datetime.now() - timedelta(hours=24)
 
     # Iterate over files in the directory
     for filename in os.listdir(directory):
