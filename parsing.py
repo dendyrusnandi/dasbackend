@@ -37,21 +37,26 @@ def send_data_via_udp(data, udp_ip, udp_port):
 
 def save_mean_value(row):
     # Extract key and MeanValue from the row
-    key = row['key'] 
+    key = row['key']
     mean_value = row['MeanValue']
     
     # Define the directory to store files
     folder_path = 'file'
+    
+    # Ensure the folder exists
     os.makedirs(folder_path, exist_ok=True)
     
     # Define the file path based on the key
     file_path = os.path.join(folder_path, f"{key}.txt")
     
     # Write or update the file with the new MeanValue
-    with open(file_path, 'w') as file:
-        file.write(str(mean_value))
-    
-    print(f"Saved MeanValue '{mean_value}' to file '{file_path}'.")
+    try:
+        with open(file_path, 'w') as file:
+            file.write(str(mean_value))
+        print(f"Saved MeanValue '{mean_value}' to file '{file_path}'.")
+    except Exception as e:
+        print(f"Error saving MeanValue to file '{file_path}': {e}")
+
 
 
 def job():
