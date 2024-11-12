@@ -13,11 +13,11 @@ def send_data_via_udp(data, udp_ip, udp_port):
     """Convert data to JSON and send via UDP."""
     try:
         # Convert data to JSON format
-        json_data = json.dumps(data)
+        # json_data = json.dumps(data)
         
         # Send data over UDP
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.sendto(json_data.encode('utf-8'), (udp_ip, udp_port))
+        sock.sendto(data.encode('utf-8'), (udp_ip, udp_port))
         print(f"Data sent to {udp_ip}:{udp_port}")
     
     except socket.error as e:
@@ -49,16 +49,14 @@ def ping_server(server_ip):
         # Check the return code to determine if the ping was successful
         if response.returncode == 0:
             print(f"Ping to {server_ip} successful.")
-            
-            data = "{\"identifier\" : \"alarm\", \"type\" : \"DAS\", \"message\" : \"DAS OK [" + server_ip + "]\"}"
+            data = '{"identifier": "alarm", "type": "ttl", "message": "DAS OK ['+server_ip+']"}'
             send_data_via_udp(data, udp_ip, udp_port)
-	       
+           
 
             return True
         else:
             print(f"Ping to {server_ip} failed.")
-
-            data = "{\"identifier\" : \"alarm\", \"type\" : \"DAS\", \"message\" : \"DAS failed [" + server_ip + "]\"}"
+            data = '{"identifier": "alarm", "type": "ttl", "message": "DAS Failed ['+server_ip+']"}'
             send_data_via_udp(data, udp_ip, udp_port)
 
 
@@ -68,8 +66,8 @@ def ping_server(server_ip):
         return False
 
 def job():
-	print(f"Check Connection {ip_das}")
-	ping_server(ip_das)
+    print(f"Check Connection {ip_das}")
+    ping_server(ip_das)
 
 
 schedule.every(5).seconds.do(job)
@@ -82,3 +80,5 @@ while True:
 #     while True:
 #         job()  # Call the job function to ping the server
 #         time.sleep(10)  # Wait for 10 seconds before the next iteration
+
+

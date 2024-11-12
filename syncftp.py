@@ -3,10 +3,10 @@ import os
 import time
 
 # FTP connection details
-ftp_host = "195.35.14.169"
-ftp_user = "rdpuser"
-ftp_passwd = "Elsaelsa2024#"  # Replace with the correct password
-remote_dir = "/home/rdpuser/snap/"  # Remote directory to copy
+ftp_host = "210.210.166.82"
+ftp_user = "ftptest"
+ftp_passwd = "ftptest0309"  # Replace with the correct password
+remote_dir = "/home/ftptest/mcz/"  # Remote directory to copy
 local_dir = '/home/cbi/dbmcz/' # Local directory to save the files
 
 # Ensure the local directory exists
@@ -52,7 +52,7 @@ def download_and_delete_files():
 # Loop to download files and delete them from the remote server every 5 seconds
 while True:
     download_and_delete_files()  # Download and delete files
-    time.sleep(10)  # Wait for 5 seconds before downloading again
+    time.sleep(65)  # Wait for 5 seconds before downloading again
 
 # Close the FTP connection
 ftp.quit()
