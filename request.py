@@ -9,7 +9,7 @@ host = config.ip_local
 udp_port_data = config.udp_port_data
 udp_port_warning = config.udp_port_warning
 folder_path = 'file'
-valid_values = ['co', 'co2', 'hc', 'no2', 'noise', 'o3', 'pm10', 'pm2.5', 'so2', 'tvoc']
+valid_values = ['co', 'co2', 'hc', 'no2', 'noise', 'o3', 'pm10', 'pm2.5', 'so2', 'tvoc','temperature']
 
 
 def log_error(error_message):
@@ -116,4 +116,3 @@ def udp_server(host=host, port=port):
 
 # Run the UDP server
 udp_server()
-

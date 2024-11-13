@@ -67,7 +67,7 @@ def save_mean_value(row):
 
 def job():
     try:
-        csv_files = [f for f in os.listdir(folder_path) if f.endswith('.csv')]
+        csv_files = [f for f in os.listdir(folder_path) if f.endswith('.mv1.csv')]
         if not csv_files:
             #data = '{"identifier": "alarm", "type": "comm", "message": "DAS No Data [' + udp_ip + ']"}'
             data = '{"identifier": "alarm", "type": "comm", "message": "DAS No Data File"}'

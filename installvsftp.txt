@@ -1,0 +1,23 @@
+sudo apt update
+sudo apt install vsftpd
+sudo systemctl start vsftpd
+sudo systemctl enable vsftpd
+sudo vim /etc/vsftpd.conf
+	ssl_enable=NO
+	local_enable=YES
+	chroot_local_user=YES
+	listen=YES
+	listen_ipv6=NO
+	write_enable=YES
+
+
+# 1. Create FTP user and set password
+sudo adduser ftpuser
+sudo mkdir /home/ftpuser/dbmcz
+sudo chown ftpuser:ftpuser /home/ftpuser/dbmcz
+sudo chmod 777 -R /home/ftpuser/dbmcz
+
+
+sudo systemctl restart vsftpd
+sudo ufw allow ftp
+
